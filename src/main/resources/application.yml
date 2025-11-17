@@ -16,3 +16,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
