@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class RacePageController {
 
-    @PostMapping("/race")
+    @PostMapping("/room")
     public String racePage() {
-        return "race";
+        return "race/room";
     }
 }
