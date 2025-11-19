@@ -13,5 +13,9 @@
 
 ---
 
+### Swagger 접속
+
+- localhost:8080/swagger-ui
+
 ### ERD
 ![ERD](image/erd.png)
