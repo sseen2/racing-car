@@ -29,4 +29,15 @@ public class Car {
 
     @Column(nullable = false, length = 20)
     private String password;
+
+    @Column(nullable = true)
+    private Boolean isHost;
+
+    public boolean isMatchedPassword(String password) {
+        return password.equals(this.password);
+    }
+
+    public void registerHost() {
+        this.isHost = true;
+    }
 }

@@ -10,9 +10,62 @@
         <h1>🚗 자동차 경주</h1>
         <p>자동차 경주 게임을 시작하려면 아래 버튼을 눌러주세요.</p>
 
-        <form>
+        <form onsubmit="startGame(event);">
+            <div>
+                <label for="carName">자동차 이름</label>
+                <input type="text" id="carName" name="carName" required />
+            </div>
+            <div>
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+
+            <p id="errorMessage" style="color: red; margin-top: 8px;"></p>
+
             <button type="submit" class="btn">게임 시작</button>
         </form>
     </div>
+
+    <script>
+        async function startGame() {
+            event.preventDefault();
+
+            const carName = document.getElementById('carName').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorEl = document.getElementById('errorMessage');
+
+            errorEl.textContent = '';
+
+            if (!carName || !password) {
+                errorEl.textContent = "자동차 이름과 비밀번호를 모두 입력해주세요.";
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/car/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        carName: carName,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    errorEl.textContent = result.message;
+                    return;
+                }
+
+                window.location.href = '/room';
+            } catch (error) {
+                console.error(error);
+                alert(error);
+            }
+        }
+    </script>
 </body>
 </html>

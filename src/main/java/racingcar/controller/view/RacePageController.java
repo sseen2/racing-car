@@ -1,12 +1,12 @@
 package racingcar.controller.view;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class RacePageController {
 
-    @PostMapping("/room")
+    @GetMapping("/room")
     public String racePage() {
         return "race/room";
     }
