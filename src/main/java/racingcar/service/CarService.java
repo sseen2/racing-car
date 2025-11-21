@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import racingcar.dto.request.CarRegisterRequest;
 import racingcar.dto.response.CarErrorResponse;
+import racingcar.dto.response.CarRegisterResponse;
 import racingcar.entity.Car;
 import racingcar.global.exception.BusinessException;
 import racingcar.repository.CarRepository;
@@ -14,7 +15,7 @@ public class CarService {
 
     private final CarRepository carRepository;
 
-    public void registerCar(CarRegisterRequest request) {
+    public CarRegisterResponse registerCar(CarRegisterRequest request) {
         String carName = request.carName();
         String password = request.password();
 
@@ -24,6 +25,9 @@ public class CarService {
         validatePassword(car, password);
 
         updateHostStatus(car);
+        carRepository.save(car);
+
+        return new CarRegisterResponse(car.getName(), car.getIsHost());
     }
 
     private Car saveCar(String name, String password) {
@@ -42,7 +46,10 @@ public class CarService {
 
     private void updateHostStatus(Car car) {
         if (!carRepository.hasHost()) {
-            car.registerHost();
+            car.updateHostStatus(true);
+            return;
         }
+
+        car.updateHostStatus(false);
     }
 }

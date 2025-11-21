@@ -37,7 +37,7 @@ public class Car {
         return password.equals(this.password);
     }
 
-    public void registerHost() {
-        this.isHost = true;
+    public void updateHostStatus(boolean isHost) {
+        this.isHost = isHost;
     }
 }
