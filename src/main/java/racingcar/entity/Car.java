@@ -33,11 +33,19 @@ public class Car {
     @Column(nullable = true)
     private Boolean isHost;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean isParticipated = false;
+
     public boolean isMatchedPassword(String password) {
         return password.equals(this.password);
     }
 
     public void updateHostStatus(boolean isHost) {
         this.isHost = isHost;
+    }
+
+    public void updateParticipatedStatus(boolean isParticipated) {
+        this.isParticipated = isParticipated;
     }
 }

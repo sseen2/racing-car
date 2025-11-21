@@ -25,6 +25,7 @@ public class CarService {
         validatePassword(car, password);
 
         updateHostStatus(car);
+        car.updateParticipatedStatus(true);
         carRepository.save(car);
 
         return new CarRegisterResponse(car.getName(), car.getIsHost());
