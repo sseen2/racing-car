@@ -1,9 +1,12 @@
 package racingcar.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import racingcar.dto.request.CarRegisterRequest;
 import racingcar.dto.response.CarErrorResponse;
+import racingcar.dto.response.CarParticipantResponse;
 import racingcar.dto.response.CarRegisterResponse;
 import racingcar.entity.Car;
 import racingcar.global.exception.BusinessException;
@@ -14,6 +17,7 @@ import racingcar.repository.CarRepository;
 public class CarService {
 
     private final CarRepository carRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     public CarRegisterResponse registerCar(CarRegisterRequest request) {
         String carName = request.carName();
@@ -52,5 +56,12 @@ public class CarService {
         }
 
         car.updateHostStatus(false);
+    }
+
+    public List<CarParticipantResponse> updateParticipants() {
+        return carRepository.findAllByIsParticipated(true)
+                .stream()
+                .map(car -> new CarParticipantResponse(car.getName()))
+                .toList();
     }
 }
