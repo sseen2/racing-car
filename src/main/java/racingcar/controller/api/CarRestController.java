@@ -27,6 +27,7 @@ public class CarRestController {
     @Operation(summary = "자동차 등록", description = "자동차가 없는 경우 자동차를 등록하고, 이미 등록된 경우 비밀번호를 확인 후 게임에 입장합니다.")
     public ApiResponse<CarRegisterResponse> registerCar(@RequestBody @Valid CarRegisterRequest request) {
         CarRegisterResponse response = carService.registerCar(request);
+        carService.sendParticipants();
         return ApiResponse.success(CarSuccessResponse.REGISTER_CAR, response);
     }
 

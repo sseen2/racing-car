@@ -58,6 +58,11 @@ public class CarService {
         car.updateHostStatus(false);
     }
 
+    public void sendParticipants() {
+        List<CarParticipantResponse> carNames = updateParticipants();
+        simpMessagingTemplate.convertAndSend("/sub/race/participants", carNames);
+    }
+
     public List<CarParticipantResponse> updateParticipants() {
         return carRepository.findAllByIsParticipated(true)
                 .stream()
