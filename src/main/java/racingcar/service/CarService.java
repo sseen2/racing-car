@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 import racingcar.dto.request.CarRegisterRequest;
 import racingcar.dto.request.RaceStartRequest;
 import racingcar.dto.response.CarErrorResponse;
-import racingcar.dto.response.CarParticipantResponse;
-import racingcar.dto.response.CarRegisterResponse;
+import racingcar.dto.response.CarInfoResponse;
 import racingcar.dto.response.RaceResultResponse;
 import racingcar.entity.Car;
 import racingcar.global.exception.BusinessException;
@@ -22,7 +21,7 @@ public class CarService {
     private final CarRepository carRepository;
     private final WebSocketService webSocketService;
 
-    public CarRegisterResponse registerCar(CarRegisterRequest request) {
+    public CarInfoResponse registerCar(CarRegisterRequest request) {
         String carName = request.carName();
         String password = request.password();
 
@@ -35,7 +34,7 @@ public class CarService {
         car.updateParticipatedStatus(true);
         carRepository.save(car);
 
-        return new CarRegisterResponse(car.getName(), car.getIsHost());
+        return new CarInfoResponse(car.getName(), car.getIsHost());
     }
 
     private Car saveCar(String name, String password) {
@@ -62,14 +61,14 @@ public class CarService {
     }
 
     public void sendParticipants() {
-        List<CarParticipantResponse> response = updateParticipants();
+        List<CarInfoResponse> response = updateParticipants();
         webSocketService.sendParticipants(response);
     }
 
-    public List<CarParticipantResponse> updateParticipants() {
+    public List<CarInfoResponse> updateParticipants() {
         return carRepository.findAllByIsParticipated(true)
                 .stream()
-                .map(car -> new CarParticipantResponse(car.getName()))
+                .map(car -> new CarInfoResponse(car.getName(), car.getIsHost()))
                 .toList();
     }
 
@@ -86,13 +85,13 @@ public class CarService {
             moveCars();
         }
 
-        List<RaceResultResponse> response = getRaceResults();
-        webSocketService.sendResult(response);
-
         int maxPosition = carRepository.findTopByOrderByPositionDesc().getPosition();
         List<Car> participantCars = carRepository.findAllByIsParticipated(true);
 
         raceService.saveResult(maxPosition, participantCars);
+
+        List<RaceResultResponse> response = getRaceResults();
+        webSocketService.sendResult(response);
     }
 
     private void validateStart(String carName) {

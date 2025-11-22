@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import racingcar.dto.response.CarParticipantResponse;
+import racingcar.dto.response.CarInfoResponse;
 import racingcar.dto.response.RaceResultResponse;
 
 @Service
@@ -17,7 +17,7 @@ public class WebSocketService {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public void sendParticipants(List<CarParticipantResponse> response) {
+    public void sendParticipants(List<CarInfoResponse> response) {
         simpMessagingTemplate.convertAndSend(SUB_PARTICIPANTS_PATH, response);
     }
 

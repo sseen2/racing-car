@@ -1,6 +1,6 @@
 package racingcar.dto.response;
 
-public record CarRegisterResponse(
+public record CarInfoResponse(
     String name,
     boolean isHost
 ) {
