@@ -20,4 +20,8 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     boolean hasHost();
 
     List<Car> findAllByIsParticipated(boolean isParticipated);
+
+    int countByIsParticipated(boolean isParticipated);
+
+    Car findTopByOrderByPositionDesc();
 }

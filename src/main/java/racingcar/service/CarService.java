@@ -1,13 +1,15 @@
 package racingcar.service;
 
 import java.util.List;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import racingcar.dto.request.CarRegisterRequest;
+import racingcar.dto.request.RaceStartRequest;
 import racingcar.dto.response.CarErrorResponse;
 import racingcar.dto.response.CarParticipantResponse;
 import racingcar.dto.response.CarRegisterResponse;
+import racingcar.dto.response.RaceResultResponse;
 import racingcar.entity.Car;
 import racingcar.global.exception.BusinessException;
 import racingcar.repository.CarRepository;
@@ -16,8 +18,9 @@ import racingcar.repository.CarRepository;
 @RequiredArgsConstructor
 public class CarService {
 
+    private final RaceService raceService;
     private final CarRepository carRepository;
-    private final SimpMessagingTemplate simpMessagingTemplate;
+    private final WebSocketService webSocketService;
 
     public CarRegisterResponse registerCar(CarRegisterRequest request) {
         String carName = request.carName();
@@ -59,14 +62,77 @@ public class CarService {
     }
 
     public void sendParticipants() {
-        List<CarParticipantResponse> carNames = updateParticipants();
-        simpMessagingTemplate.convertAndSend("/sub/race/participants", carNames);
+        List<CarParticipantResponse> response = updateParticipants();
+        webSocketService.sendParticipants(response);
     }
 
     public List<CarParticipantResponse> updateParticipants() {
         return carRepository.findAllByIsParticipated(true)
                 .stream()
                 .map(car -> new CarParticipantResponse(car.getName()))
+                .toList();
+    }
+
+    public void startRace(RaceStartRequest request) {
+        String carName = request.carName();
+        int tryCount = request.tryCount();
+
+        validateStart(carName);
+
+        webSocketService.sendLog("\uD83C\uDFC1 자동차 경주를 시작합니다!");
+        webSocketService.sendLog("시도횟수는 " + tryCount + "회 입니다.");
+
+        for (int i = 0; i < tryCount; i++) {
+            moveCars();
+        }
+
+        List<RaceResultResponse> response = getRaceResults();
+        webSocketService.sendResult(response);
+
+        int maxPosition = carRepository.findTopByOrderByPositionDesc().getPosition();
+        List<Car> participantCars = carRepository.findAllByIsParticipated(true);
+
+        raceService.saveResult(maxPosition, participantCars);
+    }
+
+    private void validateStart(String carName) {
+        validateHost(carName);
+        validateParticipantCount();
+    }
+
+    private void validateHost(String carName) {
+        boolean isHost = carRepository.findByName(carName)
+                .orElseThrow(() -> new BusinessException(CarErrorResponse.CAR_NOT_FOUND))
+                .getIsHost();
+
+        if (!isHost) {
+            throw new BusinessException(CarErrorResponse.ONLY_HOST_ALLOWED);
+        }
+    }
+
+    private void validateParticipantCount() {
+        int participantCount = carRepository.countByIsParticipated(true);
+
+        if (participantCount <= 1) {
+            throw new BusinessException(CarErrorResponse.PARTICIPANT_TOO_FEW);
+        }
+    }
+
+    private void moveCars() {
+        List<Car> cars = carRepository.findAllByIsParticipated(true);
+
+        cars.forEach(car -> {
+            Random random = new Random();
+            int randomValue = random.nextInt(9);
+            car.move(randomValue);
+        });
+        carRepository.saveAll(cars);
+    }
+
+    private List<RaceResultResponse> getRaceResults() {
+        List<Car> participatedCars = carRepository.findAllByIsParticipated(true);
+        return participatedCars.stream()
+                .map(car -> new RaceResultResponse(car.getName(), car.getPosition()))
                 .toList();
     }
 }
