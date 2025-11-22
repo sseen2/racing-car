@@ -20,6 +20,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "car")
 public class Car {
 
+    private static final int MOVE_CONDITION = 4;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,6 +39,10 @@ public class Car {
     @Builder.Default
     private boolean isParticipated = false;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private int position = 0;
+
     public boolean isMatchedPassword(String password) {
         return password.equals(this.password);
     }
@@ -47,5 +53,11 @@ public class Car {
 
     public void updateParticipatedStatus(boolean isParticipated) {
         this.isParticipated = isParticipated;
+    }
+
+    public void move(int randomValue) {
+        if (randomValue >= MOVE_CONDITION) {
+            position++;
+        }
     }
 }
