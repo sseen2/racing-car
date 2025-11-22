@@ -14,6 +14,7 @@ import racingcar.dto.response.CarInfoResponse;
 import racingcar.dto.response.CarSuccessResponse;
 import racingcar.global.dto.ApiResponse;
 import racingcar.service.CarService;
+import racingcar.service.WebSocketService;
 
 @RestController
 @RequestMapping("/api/car")
@@ -21,12 +22,14 @@ import racingcar.service.CarService;
 public class CarRestController {
 
     private final CarService carService;
+    private final WebSocketService webSocketService;
 
     @PostMapping("/register")
     @Operation(summary = "자동차 등록", description = "자동차가 없는 경우 자동차를 등록하고, 이미 등록된 경우 비밀번호를 확인 후 게임에 입장합니다.")
     public ApiResponse<CarInfoResponse> registerCar(@RequestBody @Valid CarRegisterRequest request) {
         CarInfoResponse response = carService.registerCar(request);
         carService.sendParticipants();
+        webSocketService.sendLog(request.carName() + "님이 입장했습니다.");
         return ApiResponse.success(CarSuccessResponse.REGISTER_CAR, response);
     }
 
