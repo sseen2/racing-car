@@ -34,6 +34,6 @@ public class Race {
     private Car car;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = true)
     private RaceResult result;
 }
