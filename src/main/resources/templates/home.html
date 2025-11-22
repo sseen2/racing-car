@@ -60,6 +60,8 @@
                     return;
                 }
 
+                sessionStorage.setItem('carInfo', JSON.stringify(result.data));
+
                 window.location.href = '/room';
             } catch (error) {
                 console.error(error);
