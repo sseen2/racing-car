@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import racingcar.entity.Car;
 import racingcar.entity.Race;
 import racingcar.entity.RaceResult;
@@ -11,6 +12,7 @@ import racingcar.repository.RaceRepository;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RaceService {
 
     private static final String WINNER_MESSAGE = "\uD83C\uDFC6 최종 우승자는 %s입니다.";
@@ -18,6 +20,7 @@ public class RaceService {
     private final RaceRepository raceRepository;
     private final WebSocketService webSocketService;
 
+    @Transactional
     public void saveResult(int maxPosition, List<Car> cars) {
         List<Car> winners = getWinner(maxPosition, cars);
         saveRaceResult(winners, cars);

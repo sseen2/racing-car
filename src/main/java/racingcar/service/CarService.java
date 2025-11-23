@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import racingcar.dto.request.CarRegisterRequest;
 import racingcar.dto.request.RaceLeaveRequest;
 import racingcar.dto.request.RaceStartRequest;
@@ -19,6 +20,7 @@ import racingcar.repository.CarRepository;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CarService {
 
     private static final String START_MESSAGE = "\uD83C\uDFC1 자동차 경주를 시작합니다!";
@@ -34,6 +36,7 @@ public class CarService {
     private final WebSocketService webSocketService;
     private final CarRepository carRepository;
 
+    @Transactional
     public CarInfoResponse registerCar(CarRegisterRequest request) {
         String carName = request.carName();
         String password = request.password();
@@ -45,7 +48,6 @@ public class CarService {
 
         updateHostStatus(car);
         car.updateParticipatedStatus(true);
-        carRepository.save(car);
 
         return new CarInfoResponse(car.getName(), car.getIsHost());
     }
@@ -98,6 +100,7 @@ public class CarService {
                 .toList();
     }
 
+    @Transactional
     public void startRace(RaceStartRequest request) {
         String carName = request.carName();
         int tryCount = request.tryCount();
@@ -181,6 +184,7 @@ public class CarService {
                 .toList();
     }
 
+    @Transactional
     public void leaveRace(RaceLeaveRequest request) {
         String carName = request.carName();
 
@@ -189,7 +193,6 @@ public class CarService {
 
         car.updateParticipatedStatus(false);
         handOverHost(car);
-        carRepository.save(car);
 
         sendParticipants();
         webSocketService.sendLog(String.format(LEAVE_MESSAGE, carName));
@@ -198,11 +201,9 @@ public class CarService {
     private void handOverHost(Car car) {
         if (car.getIsHost()) {
             car.updateHostStatus(false);
-            carRepository.save(car);
 
             Car newHostCar = carRepository.findTopByIsParticipatedIsTrue();
             newHostCar.updateHostStatus(true);
-            carRepository.save(newHostCar);
         }
     }
 }
