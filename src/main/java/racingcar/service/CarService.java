@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import racingcar.dto.request.CarRegisterRequest;
+import racingcar.dto.request.RaceLeaveRequest;
 import racingcar.dto.request.RaceStartRequest;
 import racingcar.dto.response.error.CarError;
 import racingcar.dto.response.CarInfoResponse;
@@ -22,6 +23,7 @@ public class CarService {
 
     private static final String START_MESSAGE = "\uD83C\uDFC1 자동차 경주를 시작합니다!";
     private static final String TRY_COUNT_MESSAGE = "시도횟수는 %d회 입니다.";
+    private static final String LEAVE_MESSAGE = "%s님이 퇴장했습니다.";
 
     private static final long INTERVAL_MILLIS = 1000L;
     private static final int MIN_PARTICIPANT_COUNT = 1;
@@ -177,5 +179,30 @@ public class CarService {
         return participatedCars.stream()
                 .map(car -> new RaceResultResponse(car.getName(), car.getPosition()))
                 .toList();
+    }
+
+    public void leaveRace(RaceLeaveRequest request) {
+        String carName = request.carName();
+
+        Car car = carRepository.findByName(carName)
+                .orElseThrow(() -> new BusinessException(CarError.CAR_NOT_FOUND));
+
+        car.updateParticipatedStatus(false);
+        handOverHost(car);
+        carRepository.save(car);
+
+        sendParticipants();
+        webSocketService.sendLog(String.format(LEAVE_MESSAGE, carName));
+    }
+
+    private void handOverHost(Car car) {
+        if (car.getIsHost()) {
+            car.updateHostStatus(false);
+            carRepository.save(car);
+
+            Car newHostCar = carRepository.findTopByIsParticipatedIsTrue();
+            newHostCar.updateHostStatus(true);
+            carRepository.save(newHostCar);
+        }
     }
 }

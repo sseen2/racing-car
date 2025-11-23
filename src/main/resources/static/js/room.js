@@ -93,6 +93,13 @@ function showParticipantList(data) {
         }
         participantList.appendChild(p);
     });
+
+    const me = data.find(p => p.name === carInfo.name);
+    if (me) {
+        carInfo.isHost = me.isHost;
+    }
+
+    showHostSection();
 }
 
 async function startRace(event) {
@@ -149,14 +156,48 @@ async function loadInitParticipants() {
     }
 }
 
-function exitRoom() {
-    disconnectWebSocket();
+async function exitRoom() {
+    try {
+        const response = await fetch('/api/race/leave', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                carName: carInfo.name
+            })
+        });
 
-    sessionStorage.removeItem('carInfo');
+        const result = await response.json();
 
-    window.location.href = '/';
+        if (!result.success) {
+            console.error(result.message);
+            return;
+        }
+
+        disconnectWebSocket();
+
+        sessionStorage.removeItem('carInfo');
+
+        window.location.href = '/';
+    } catch (error) {
+        console.error(error);
+    }
 }
 
+function showHostSection() {
+    const hostSection = document.getElementById('host-only');
+    if (!hostSection) {
+        return;
+    }
+
+    if (carInfo.isHost) {
+        hostSection.style.display = 'flex';
+    }
+    else {
+        hostSection.style.display = 'none';
+    }
+}
 
 window.addEventListener('load', function () {
     connectWebSocket();
@@ -170,10 +211,7 @@ window.addEventListener('load', function () {
 
     carInfo = JSON.parse(carInfoJson);
 
-    const hostSection = document.getElementById('host-only');
-    if (hostSection && !carInfo.isHost) {
-        hostSection.style.display = 'none';
-    }
+    showHostSection();
 
     showLogMessage(`${carInfo.name}님이 입장했습니다.`);
 

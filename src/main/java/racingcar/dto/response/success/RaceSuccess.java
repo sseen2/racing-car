@@ -7,7 +7,8 @@ import racingcar.global.dto.BaseCode;
 @RequiredArgsConstructor
 public enum RaceSuccess implements BaseCode {
 
-    START_RACE(HttpStatus.OK, "자동차 경주 시작 성공.");
+    START_RACE(HttpStatus.OK, "자동차 경주 시작 성공."),
+    LEAVE_RACE(HttpStatus.OK, "자동차 경주 나가기 성공.");
 
     private final HttpStatus status;
     private final String message;

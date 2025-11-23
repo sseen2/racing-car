@@ -24,4 +24,6 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     int countByIsParticipated(boolean isParticipated);
 
     Car findTopByOrderByPositionDesc();
+
+    Car findTopByIsParticipatedIsTrue();
 }
