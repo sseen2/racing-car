@@ -22,6 +22,7 @@ public class CarService {
 
     private static final long INTERVAL_MILLIS = 1000L;
     private static final int MIN_PARTICIPANT_COUNT = 1;
+    private static final int MAX_PARTICIPANT_COUNT = 5;
     private static final int MAX_RANDOM_NUMBER = 9;
 
     private final RaceService raceService;
@@ -35,7 +36,7 @@ public class CarService {
         Car car = carRepository.findByName(carName)
                 .orElseGet(() -> saveCar(carName, password));
 
-        validatePassword(car, password);
+        validateEnter(car, password);
 
         updateHostStatus(car);
         car.updateParticipatedStatus(true);
@@ -50,6 +51,19 @@ public class CarService {
                 .password(password)
                 .build();
         return carRepository.save(car);
+    }
+
+    private void validateEnter(Car car, String password) {
+        validateMaxParticipant();
+        validatePassword(car, password);
+    }
+
+    private void validateMaxParticipant() {
+        int participantCount = carRepository.countByIsParticipated(true);
+
+        if (participantCount >= MAX_PARTICIPANT_COUNT) {
+            throw new BusinessException(CarErrorResponse.TOO_MANY_PARTICIPANT);
+        }
     }
 
     private void validatePassword(Car car, String password) {
