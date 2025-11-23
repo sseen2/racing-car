@@ -95,6 +95,7 @@ button {
     border-radius: 4px;
     background-color: #fff;
     min-height: 220px;
+    max-height: 220px;
     padding: 16px;
     overflow-y: auto;
 }
@@ -120,4 +121,76 @@ button {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 10px;
+}
+
+.winner-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.winner-overlay.hidden {
+    display: none;
+}
+
+.winner-modal {
+    background-color: #ffffff;
+    padding: 24px 28px 20px;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.winner-modal-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.winner-modal-text {
+    font-size: 18px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.winner-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.winner-button {
+    padding: 8px 18px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    min-width: 110px;
+}
+
+.winner-button-primary {
+    background-color: #e53935;
+    color: #ffffff;
+}
+
+.winner-button-primary:hover {
+    background-color: #c62828;
+}
+
+.winner-button-secondary {
+    background-color: #ffffff;
+    color: #555555;
+    border: 1px solid #cccccc;
+}
+
+.winner-button-secondary:hover {
+    background-color: #f5f5f5;
 }

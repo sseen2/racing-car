@@ -45,6 +45,52 @@ function showLogMessage(data) {
 
     logMessage.appendChild(p);
     logMessage.scrollTop = logMessage.scrollHeight;
+
+    if (typeof data === 'string' && data.includes('최종 우승자')) {
+        openWinnerOverlay(data);
+    }
+}
+
+function openWinnerOverlay(message) {
+    const overlay = document.getElementById('winner-overlay');
+    const winnerText = document.getElementById('winner-text');
+
+    if (!overlay || !winnerText) {
+        return;
+    }
+
+    winnerText.textContent = message;
+    overlay.classList.remove('hidden');
+}
+
+async function closeWinnerOverlay() {
+    try {
+        const overlay = document.getElementById('winner-overlay');
+        if (!overlay) {
+            return;
+        }
+
+        const response = await fetch('/api/car/reset/position', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                carName: carInfo.name
+            })
+        });
+        const result = await response.json();
+
+        if (!result.success) {
+            console.error(result.message);
+            return;
+        }
+
+        overlay.classList.add('hidden');
+        showHostSection();
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 function showResult(data) {
@@ -104,6 +150,11 @@ function showParticipantList(data) {
 
 async function startRace(event) {
     event.preventDefault();
+
+    const hostSection = document.getElementById('host-only');
+    if (hostSection) {
+        hostSection.style.display = 'none';
+    }
 
     const tryCount = document.getElementById('try-count').value.trim();
     const errorEl = document.getElementById('errorMessage');
@@ -216,4 +267,21 @@ window.addEventListener('load', function () {
     showLogMessage(`${carInfo.name}님이 입장했습니다.`);
 
     loadInitParticipants();
+
+
+    const stayButton = document.getElementById('winner-stay-button');
+    const exitButton = document.getElementById('winner-exit-button');
+
+    if (stayButton) {
+        stayButton.addEventListener('click', function () {
+            closeWinnerOverlay();
+        });
+    }
+
+    if (exitButton) {
+        exitButton.addEventListener('click', function () {
+            closeWinnerOverlay();
+            exitRoom();
+        });
+    }
 });

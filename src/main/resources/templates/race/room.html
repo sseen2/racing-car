@@ -42,5 +42,17 @@
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="/js/room.js"></script>
+
+
+    <div id="winner-overlay" class="winner-overlay hidden">
+        <div class="winner-modal">
+            <div class="winner-modal-title">🏆 최종 결과</div>
+            <div id="winner-text" class="winner-modal-text"></div>
+            <div class="winner-modal-actions">
+                <button type="button" id="winner-stay-button" class="winner-button winner-button-secondary">한 번 더하기</button>
+                <button type="button" id="winner-exit-button" class="winner-button winner-button-primary">방 나가기</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
