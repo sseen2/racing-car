@@ -21,6 +21,8 @@ import racingcar.repository.CarRepository;
 public class CarService {
 
     private static final long INTERVAL_MILLIS = 1000L;
+    private static final int MIN_PARTICIPANT_COUNT = 1;
+    private static final int MAX_RANDOM_NUMBER = 9;
 
     private final RaceService raceService;
     private final WebSocketService webSocketService;
@@ -107,8 +109,8 @@ public class CarService {
     private void validateParticipantCount() {
         int participantCount = carRepository.countByIsParticipated(true);
 
-        if (participantCount <= 1) {
-            throw new BusinessException(CarErrorResponse.PARTICIPANT_TOO_FEW);
+        if (participantCount <= MIN_PARTICIPANT_COUNT) {
+            throw new BusinessException(CarErrorResponse.TOO_FEW_PARTICIPANT);
         }
     }
 
@@ -147,7 +149,7 @@ public class CarService {
 
         cars.forEach(car -> {
             Random random = new Random();
-            int randomValue = random.nextInt(9);
+            int randomValue = random.nextInt(MAX_RANDOM_NUMBER);
             car.move(randomValue);
         });
         carRepository.saveAll(cars);
