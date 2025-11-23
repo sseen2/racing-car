@@ -2,6 +2,9 @@ package racingcar.service;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import racingcar.dto.request.CarRegisterRequest;
@@ -17,9 +20,11 @@ import racingcar.repository.CarRepository;
 @RequiredArgsConstructor
 public class CarService {
 
+    private static final long INTERVAL_MILLIS = 1000L;
+
     private final RaceService raceService;
-    private final CarRepository carRepository;
     private final WebSocketService webSocketService;
+    private final CarRepository carRepository;
 
     public CarInfoResponse registerCar(CarRegisterRequest request) {
         String carName = request.carName();
@@ -81,17 +86,7 @@ public class CarService {
         webSocketService.sendLog("\uD83C\uDFC1 자동차 경주를 시작합니다!");
         webSocketService.sendLog("시도횟수는 " + tryCount + "회 입니다.");
 
-        for (int i = 0; i < tryCount; i++) {
-            moveCars();
-        }
-
-        int maxPosition = carRepository.findTopByOrderByPositionDesc().getPosition();
-        List<Car> participantCars = carRepository.findAllByIsParticipated(true);
-
-        raceService.saveResult(maxPosition, participantCars);
-
-        List<RaceResultResponse> response = getRaceResults();
-        webSocketService.sendResult(response);
+        startRace(tryCount);
     }
 
     private void validateStart(String carName) {
@@ -115,6 +110,36 @@ public class CarService {
         if (participantCount <= 1) {
             throw new BusinessException(CarErrorResponse.PARTICIPANT_TOO_FEW);
         }
+    }
+
+    private void startRace(int tryCount) {
+        try (ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor()) {
+            for (int round = 0; round < tryCount; round++) {
+                long delay = round * INTERVAL_MILLIS;
+
+                schedule(scheduler, delay, this::raceRound);
+            }
+
+            long finalDelay = tryCount * INTERVAL_MILLIS;
+            schedule(scheduler, finalDelay, this::result);
+        }
+    }
+
+    private void raceRound() {
+        moveCars();
+        List<RaceResultResponse> response = getRaceResults();
+        webSocketService.sendResult(response);
+    }
+
+    private void result() {
+        int maxPosition = carRepository.findTopByOrderByPositionDesc().getPosition();
+        List<Car> participantCars = carRepository.findAllByIsParticipated(true);
+
+        raceService.saveResult(maxPosition, participantCars);
+    }
+
+    private void schedule(ScheduledExecutorService scheduler, long delay, Runnable task) {
+        scheduler.schedule(task, delay, TimeUnit.MILLISECONDS);
     }
 
     private void moveCars() {
