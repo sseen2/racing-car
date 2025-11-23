@@ -12,7 +12,7 @@ import racingcar.dto.request.RaceLeaveRequest;
 import racingcar.dto.request.RaceStartRequest;
 import racingcar.dto.response.success.RaceSuccess;
 import racingcar.global.dto.ApiResponse;
-import racingcar.service.CarService;
+import racingcar.service.RaceService;
 
 @RestController
 @RequestMapping("/api/race")
@@ -20,19 +20,19 @@ import racingcar.service.CarService;
 @Tag(name = "레이스 REST API")
 public class RaceRestController {
 
-    private final CarService carService;
+    private final RaceService raceService;
 
     @PostMapping("/start")
     @Operation(summary = "자동차 경주 시작", description = "시도 횟수를 입력받아 자동차 경주를 시작합니다.")
     public ApiResponse<Void> startRace(@RequestBody @Valid RaceStartRequest request) {
-        carService.startRace(request);
+        raceService.startRace(request);
         return ApiResponse.success(RaceSuccess.START_RACE);
     }
 
     @PostMapping("/leave")
     @Operation(summary = "자동차 경주 나가기", description = "자동차 경주 게임 방에서 나갑니다.")
     public ApiResponse<Void> leaveRace(@RequestBody @Valid RaceLeaveRequest request) {
-        carService.leaveRace(request);
+        raceService.leaveRace(request);
         return ApiResponse.success(RaceSuccess.LEAVE_RACE);
     }
 }
