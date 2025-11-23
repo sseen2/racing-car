@@ -1,6 +1,7 @@
 package racingcar.controller.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import racingcar.service.CarService;
 @RestController
 @RequestMapping("/api/race")
 @RequiredArgsConstructor
+@Tag(name = "레이스 REST API")
 public class RaceRestController {
 
     private final CarService carService;

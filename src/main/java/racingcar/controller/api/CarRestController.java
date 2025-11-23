@@ -1,6 +1,7 @@
 package racingcar.controller.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import racingcar.dto.request.CarRegisterRequest;
 import racingcar.dto.request.CarResetPositionRequest;
-import racingcar.dto.request.RaceLeaveRequest;
 import racingcar.dto.response.CarInfoResponse;
 import racingcar.dto.response.success.CarSuccess;
-import racingcar.dto.response.success.RaceSuccess;
 import racingcar.global.dto.ApiResponse;
 import racingcar.service.CarService;
 import racingcar.service.WebSocketService;
@@ -22,6 +21,7 @@ import racingcar.service.WebSocketService;
 @RestController
 @RequestMapping("/api/car")
 @RequiredArgsConstructor
+@Tag(name = "자동차 REST API")
 public class CarRestController {
 
     private final CarService carService;
