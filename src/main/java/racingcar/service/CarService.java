@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import racingcar.dto.request.CarRegisterRequest;
 import racingcar.dto.request.RaceStartRequest;
-import racingcar.dto.response.CarErrorResponse;
+import racingcar.dto.response.error.CarError;
 import racingcar.dto.response.CarInfoResponse;
 import racingcar.dto.response.RaceResultResponse;
 import racingcar.entity.Car;
@@ -62,13 +62,13 @@ public class CarService {
         int participantCount = carRepository.countByIsParticipated(true);
 
         if (participantCount >= MAX_PARTICIPANT_COUNT) {
-            throw new BusinessException(CarErrorResponse.TOO_MANY_PARTICIPANT);
+            throw new BusinessException(CarError.TOO_MANY_PARTICIPANT);
         }
     }
 
     private void validatePassword(Car car, String password) {
         if (!car.isMatchedPassword(password)) {
-            throw new BusinessException(CarErrorResponse.PASSWORD_NOT_MATCHED);
+            throw new BusinessException(CarError.PASSWORD_NOT_MATCHED);
         }
     }
 
@@ -112,11 +112,11 @@ public class CarService {
 
     private void validateHost(String carName) {
         boolean isHost = carRepository.findByName(carName)
-                .orElseThrow(() -> new BusinessException(CarErrorResponse.CAR_NOT_FOUND))
+                .orElseThrow(() -> new BusinessException(CarError.CAR_NOT_FOUND))
                 .getIsHost();
 
         if (!isHost) {
-            throw new BusinessException(CarErrorResponse.ONLY_HOST_ALLOWED);
+            throw new BusinessException(CarError.ONLY_HOST_ALLOWED);
         }
     }
 
@@ -124,7 +124,7 @@ public class CarService {
         int participantCount = carRepository.countByIsParticipated(true);
 
         if (participantCount <= MIN_PARTICIPANT_COUNT) {
-            throw new BusinessException(CarErrorResponse.TOO_FEW_PARTICIPANT);
+            throw new BusinessException(CarError.TOO_FEW_PARTICIPANT);
         }
     }
 

@@ -1,11 +1,11 @@
-package racingcar.dto.response;
+package racingcar.dto.response.error;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import racingcar.global.dto.BaseCode;
 
 @RequiredArgsConstructor
-public enum CarErrorResponse implements BaseCode {
+public enum CarError implements BaseCode {
 
     PASSWORD_NOT_MATCHED(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     CAR_NOT_FOUND(HttpStatus.NOT_FOUND, "자동차를 찾을 수 없습니다."),

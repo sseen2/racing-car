@@ -1,11 +1,11 @@
-package racingcar.dto.response;
+package racingcar.dto.response.success;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import racingcar.global.dto.BaseCode;
 
 @RequiredArgsConstructor
-public enum RaceSuccessResponse implements BaseCode {
+public enum RaceSuccess implements BaseCode {
 
     START_RACE(HttpStatus.OK, "자동차 경주 시작 성공.");
 

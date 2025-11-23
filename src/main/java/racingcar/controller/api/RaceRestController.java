@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import racingcar.dto.request.RaceStartRequest;
-import racingcar.dto.response.RaceSuccessResponse;
+import racingcar.dto.response.success.RaceSuccess;
 import racingcar.global.dto.ApiResponse;
 import racingcar.service.CarService;
 
@@ -23,6 +23,6 @@ public class RaceRestController {
     @Operation(summary = "자동차 경주 시작", description = "시도 횟수를 입력받아 자동차 경주를 시작합니다.")
     public ApiResponse<Void> startRace(@RequestBody @Valid RaceStartRequest request) {
         carService.startRace(request);
-        return ApiResponse.success(RaceSuccessResponse.START_RACE);
+        return ApiResponse.success(RaceSuccess.START_RACE);
     }
 }

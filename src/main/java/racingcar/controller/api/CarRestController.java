@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import racingcar.dto.request.CarRegisterRequest;
 import racingcar.dto.response.CarInfoResponse;
-import racingcar.dto.response.CarSuccessResponse;
+import racingcar.dto.response.success.CarSuccess;
 import racingcar.global.dto.ApiResponse;
 import racingcar.service.CarService;
 import racingcar.service.WebSocketService;
@@ -30,13 +30,13 @@ public class CarRestController {
         CarInfoResponse response = carService.registerCar(request);
         carService.sendParticipants();
         webSocketService.sendLog(request.carName() + "님이 입장했습니다.");
-        return ApiResponse.success(CarSuccessResponse.REGISTER_CAR, response);
+        return ApiResponse.success(CarSuccess.REGISTER_CAR, response);
     }
 
     @GetMapping("/participants")
     @Operation(summary = "자동차 경주 참가자 목록 조회", description = "자동차 경주에 참가한 자동차 이름 목록을 조회합니다.")
     public ApiResponse<List<CarInfoResponse>> getParticipants() {
         List<CarInfoResponse> response = carService.updateParticipants();
-        return ApiResponse.success(CarSuccessResponse.GET_PARTICIPANTS, response);
+        return ApiResponse.success(CarSuccess.GET_PARTICIPANTS, response);
     }
 }
