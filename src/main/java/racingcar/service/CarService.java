@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import racingcar.dto.request.CarRegisterRequest;
 import racingcar.dto.request.CarResetPositionRequest;
-import racingcar.dto.response.error.CarError;
 import racingcar.dto.response.CarInfoResponse;
+import racingcar.dto.response.error.CarError;
 import racingcar.entity.Car;
 import racingcar.global.exception.BusinessException;
 import racingcar.repository.CarRepository;
@@ -17,9 +17,6 @@ import racingcar.repository.CarRepository;
 @Transactional(readOnly = true)
 public class CarService {
 
-    private static final int MAX_PARTICIPANT_COUNT = 5;
-
-    private final WebSocketService webSocketService;
     private final CarRepository carRepository;
 
     @Transactional
@@ -30,33 +27,9 @@ public class CarService {
         Car car = carRepository.findByName(carName)
                 .orElseGet(() -> saveCar(carName, password));
 
-        validateEnter(car, password);
-
-        updateHostStatus(car);
-        car.updateParticipatedStatus(true);
+        validatePassword(car, password);
 
         return new CarInfoResponse(car.getName(), car.getIsHost());
-    }
-
-    private Car saveCar(String name, String password) {
-        Car car = Car.builder()
-                .name(name)
-                .password(password)
-                .build();
-        return carRepository.save(car);
-    }
-
-    private void validateEnter(Car car, String password) {
-        validateMaxParticipant();
-        validatePassword(car, password);
-    }
-
-    private void validateMaxParticipant() {
-        int participantCount = carRepository.countByIsParticipated(true);
-
-        if (participantCount >= MAX_PARTICIPANT_COUNT) {
-            throw new BusinessException(CarError.TOO_MANY_PARTICIPANT);
-        }
     }
 
     private void validatePassword(Car car, String password) {
@@ -65,18 +38,12 @@ public class CarService {
         }
     }
 
-    private void updateHostStatus(Car car) {
-        if (!carRepository.hasHost()) {
-            car.updateHostStatus(true);
-            return;
-        }
-
-        car.updateHostStatus(false);
-    }
-
-    public void sendParticipants() {
-        List<CarInfoResponse> response = updateParticipants();
-        webSocketService.sendParticipants(response);
+    private Car saveCar(String name, String password) {
+        Car car = Car.builder()
+                .name(name)
+                .password(password)
+                .build();
+        return carRepository.save(car);
     }
 
     public List<CarInfoResponse> updateParticipants() {

@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import racingcar.dto.request.RaceEnterRequest;
 import racingcar.dto.request.RaceLeaveRequest;
 import racingcar.dto.request.RaceStartRequest;
+import racingcar.dto.response.CarInfoResponse;
 import racingcar.dto.response.RaceResultResponse;
 import racingcar.dto.response.error.CarError;
 import racingcar.entity.Car;
@@ -25,6 +27,7 @@ import racingcar.repository.HistoryRepository;
 @Transactional(readOnly = true)
 public class RaceService {
 
+    private static final String ENTER_MESSAGE = "%s님이 입장했습니다.";
     private static final String START_MESSAGE = "\uD83C\uDFC1 자동차 경주를 시작합니다!";
     private static final String TRY_COUNT_MESSAGE = "시도횟수는 %d회 입니다.";
     private static final String WINNER_MESSAGE = "\uD83C\uDFC6 최종 우승자는 %s입니다.";
@@ -32,12 +35,57 @@ public class RaceService {
 
     private static final long INTERVAL_MILLIS = 1000L;
     private static final int MIN_PARTICIPANT_COUNT = 1;
+    private static final int MAX_PARTICIPANT_COUNT = 5;
     private static final int MAX_RANDOM_NUMBER = 9;
 
     private final CarService carService;
     private final WebSocketService webSocketService;
     private final CarRepository carRepository;
     private final HistoryRepository historyRepository;
+
+    @Transactional
+    public CarInfoResponse enterRace(RaceEnterRequest request) {
+        validateMaxParticipant();
+
+        Car car = carService.findByName(request.carName());
+
+        updateStatus(car);
+        sendEnter(request.carName());
+
+        return new CarInfoResponse(car.getName(), car.getIsHost());
+    }
+
+    private void validateMaxParticipant() {
+        int participantCount = carRepository.countByIsParticipated(true);
+
+        if (participantCount >= MAX_PARTICIPANT_COUNT) {
+            throw new BusinessException(CarError.TOO_MANY_PARTICIPANT);
+        }
+    }
+
+    private void updateStatus(Car car) {
+        updateHostStatus(car);
+        car.updateParticipatedStatus(true);
+    }
+
+    private void updateHostStatus(Car car) {
+        if (!carRepository.hasHost()) {
+            car.updateHostStatus(true);
+            return;
+        }
+
+        car.updateHostStatus(false);
+    }
+
+    private void sendParticipants() {
+        List<CarInfoResponse> response = carService.updateParticipants();
+        webSocketService.sendParticipants(response);
+    }
+
+    private void sendEnter(String name) {
+        sendParticipants();
+        webSocketService.sendLog(String.format(ENTER_MESSAGE, name));
+    }
 
     @Transactional
     public void startRace(RaceStartRequest request) {
@@ -173,7 +221,7 @@ public class RaceService {
 
         cleanupBeforeLeave(car);
 
-        carService.sendParticipants();
+        sendParticipants();
         webSocketService.sendLog(String.format(LEAVE_MESSAGE, carName));
     }
 
