@@ -20,6 +20,9 @@ import racingcar.repository.CarRepository;
 @RequiredArgsConstructor
 public class CarService {
 
+    private static final String START_MESSAGE = "\uD83C\uDFC1 자동차 경주를 시작합니다!";
+    private static final String TRY_COUNT_MESSAGE = "시도횟수는 %d회 입니다.";
+
     private static final long INTERVAL_MILLIS = 1000L;
     private static final int MIN_PARTICIPANT_COUNT = 1;
     private static final int MAX_PARTICIPANT_COUNT = 5;
@@ -99,8 +102,8 @@ public class CarService {
 
         validateStart(carName);
 
-        webSocketService.sendLog("\uD83C\uDFC1 자동차 경주를 시작합니다!");
-        webSocketService.sendLog("시도횟수는 " + tryCount + "회 입니다.");
+        webSocketService.sendLog(START_MESSAGE);
+        webSocketService.sendLog(String.format(TRY_COUNT_MESSAGE, tryCount));
 
         startRace(tryCount);
     }

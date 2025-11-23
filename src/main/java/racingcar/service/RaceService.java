@@ -13,6 +13,8 @@ import racingcar.repository.RaceRepository;
 @RequiredArgsConstructor
 public class RaceService {
 
+    private static final String WINNER_MESSAGE = "\uD83C\uDFC6 최종 우승자는 %s입니다.";
+
     private final RaceRepository raceRepository;
     private final WebSocketService webSocketService;
 
@@ -56,6 +58,6 @@ public class RaceService {
                 .map(Car::getName)
                 .collect(Collectors.joining(", "));
 
-        webSocketService.sendLog("\uD83C\uDFC6 최종 우승자는 " + names + "입니다.");
+        webSocketService.sendLog(String.format(WINNER_MESSAGE, names));
     }
 }
