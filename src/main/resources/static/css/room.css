@@ -15,6 +15,13 @@ button {
     cursor: pointer;
 }
 
+#error-message {
+    min-height: 18px;
+    font-size: 13px;
+    color: #e53935;
+    margin: 4px 0 0;
+}
+
 .page-wrapper {
     padding: 40px 60px;
 }
@@ -176,21 +183,21 @@ button {
     min-width: 110px;
 }
 
-.winner-button-primary {
+.exit-button {
     background-color: #e53935;
     color: #ffffff;
 }
 
-.winner-button-primary:hover {
+.exit-button:hover {
     background-color: #c62828;
 }
 
-.winner-button-secondary {
+.stay-button {
     background-color: #ffffff;
     color: #555555;
     border: 1px solid #cccccc;
 }
 
-.winner-button-secondary:hover {
+.stay-button:hover {
     background-color: #f5f5f5;
 }

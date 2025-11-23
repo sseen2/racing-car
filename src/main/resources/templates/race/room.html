@@ -34,7 +34,7 @@
                     <input type="text" id="try-count" placeholder="시도 횟수를 입력하세요." autocomplete="off" />
                     <button type="submit" id="start-button">게임 시작</button>
                 </div>
-                <p id="errorMessage" style="color: red; margin-top: 8px;"></p>
+                <p id="error-message" style="color: red; margin-top: 8px;"></p>
             </form>
         </div>
     </div>
@@ -49,8 +49,8 @@
             <div class="winner-modal-title">🏆 최종 결과</div>
             <div id="winner-text" class="winner-modal-text"></div>
             <div class="winner-modal-actions">
-                <button type="button" id="winner-stay-button" class="winner-button winner-button-secondary">한 번 더하기</button>
-                <button type="button" id="winner-exit-button" class="winner-button winner-button-primary">방 나가기</button>
+                <button type="button" id="stay-button" class="winner-button stay-button">한 번 더하기</button>
+                <button type="button" id="exit-button" class="winner-button exit-button">방 나가기</button>
             </div>
         </div>
     </div>

@@ -152,7 +152,7 @@ async function startRace(event) {
     event.preventDefault();
 
     const tryCount = document.getElementById('try-count').value.trim();
-    const errorEl = document.getElementById('errorMessage');
+    const errorEl = document.getElementById('error-message');
 
     errorEl.textContent = '';
 
@@ -270,8 +270,8 @@ window.addEventListener('load', function () {
     loadInitParticipants();
 
 
-    const stayButton = document.getElementById('winner-stay-button');
-    const exitButton = document.getElementById('winner-exit-button');
+    const stayButton = document.getElementById('stay-button');
+    const exitButton = document.getElementById('exit-button');
 
     if (stayButton) {
         stayButton.addEventListener('click', function () {
