@@ -9,9 +9,9 @@
 <body>
     <div class="container">
         <h1>🚗 자동차 경주</h1>
-        <p>자동차 경주 게임을 시작하려면 아래 버튼을 눌러주세요.</p>
+        <p>자동차 경주 게임을 시작하려면 로그인 후 입장 버튼을 눌러주세요.</p>
 
-        <form onsubmit="startGame(event);">
+        <form onsubmit="login(event);">
             <div>
                 <label for="carName">자동차 이름</label>
                 <input type="text" id="carName" name="carName" required />
@@ -21,10 +21,26 @@
                 <input type="password" id="password" name="password" required />
             </div>
 
-            <p id="errorMessage" style="color: red; margin-top: 8px;"></p>
+            <p id="error-message" class="error-text"></p>
 
-            <button type="submit" class="btn">게임 시작</button>
+            <button type="submit" class="button login-button" id="login-button">로그인</button>
         </form>
+
+        <div id="car-info-section" class="info-section" style="display: none;">
+            <div class="info-row">
+                <span class="info-label">내 자동차 이름</span>
+                <span id="info-car-name" class="info-value"></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">자동차 전적</span>
+                <span id="info-car-history" class="info-value"></span>
+            </div>
+
+            <div class="enter-row">
+                <p id="enter-error-message" class="enter-error-text"></p>
+                <button type="button" class="button enter-button" onclick="enterRoom()">입장</button>
+            </div>
+        </div>
     </div>
 
     <script src="/js/home.js"></script>

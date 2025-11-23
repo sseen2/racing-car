@@ -65,14 +65,14 @@ input[type="password"]:focus {
     box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.12);
 }
 
-#errorMessage {
+#error-message {
     min-height: 18px;
     font-size: 13px;
     color: #e53935;
     margin: 4px 0 0;
 }
 
-.btn {
+.button {
     margin-top: 8px;
     padding: 10px 16px;
     border-radius: 6px;
@@ -85,6 +85,62 @@ input[type="password"]:focus {
     width: 100%;
 }
 
-.btn:hover {
+.button:hover {
     background-color: #c62828;
+}
+
+.info-section {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.info-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #333;
+}
+
+.enter-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.enter-error-text {
+    flex: 1;
+    font-size: 13px;
+    color: #e53935;
+    margin: 0;
+}
+
+.enter-button {
+    width: auto;
+    min-width: 100px;
+}
+
+input:disabled {
+    background-color: #e0e0e0;
+    border-color: #bdbdbd;
+    color: #666;
+    cursor: not-allowed;
+}
+
+#login-button:disabled {
+    background-color: #bdbdbd;
+    cursor: not-allowed;
 }
