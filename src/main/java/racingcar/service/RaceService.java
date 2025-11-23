@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import racingcar.entity.Car;
-import racingcar.entity.Race;
+import racingcar.entity.History;
 import racingcar.entity.RaceResult;
-import racingcar.repository.RaceRepository;
+import racingcar.repository.HistoryRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -17,8 +17,8 @@ public class RaceService {
 
     private static final String WINNER_MESSAGE = "\uD83C\uDFC6 최종 우승자는 %s입니다.";
 
-    private final RaceRepository raceRepository;
     private final WebSocketService webSocketService;
+    private final HistoryRepository historyRepository;
 
     @Transactional
     public void saveResult(int maxPosition, List<Car> cars) {
@@ -35,7 +35,7 @@ public class RaceService {
 
     private void saveRaceResult(List<Car> winners, List<Car> cars) {
         winners.forEach(car -> {
-            createRace(car, RaceResult.WIN);
+            createHistory(car, RaceResult.WIN);
         });
 
         for (Car car : cars) {
@@ -43,17 +43,17 @@ public class RaceService {
                 continue;
             }
 
-            createRace(car, RaceResult.LOSE);
+            createHistory(car, RaceResult.LOSE);
         }
     }
 
-    private void createRace(Car car, RaceResult raceResult) {
-        Race race = Race.builder()
+    private void createHistory(Car car, RaceResult raceResult) {
+        History history = History.builder()
                 .car(car)
                 .result(raceResult)
                 .build();
 
-        raceRepository.save(race);
+        historyRepository.save(history);
     }
 
     private void sendWinner(List<Car> winners) {

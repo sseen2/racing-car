@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import racingcar.dto.request.CarRegisterRequest;
 import racingcar.dto.request.CarResetPositionRequest;
 import racingcar.dto.response.CarInfoResponse;
+import racingcar.dto.response.HistoryResponse;
 import racingcar.dto.response.success.CarSuccess;
 import racingcar.global.dto.ApiResponse;
 import racingcar.service.CarService;
+import racingcar.service.HistoryService;
 import racingcar.service.WebSocketService;
 
 @RestController
@@ -25,6 +28,7 @@ import racingcar.service.WebSocketService;
 public class CarRestController {
 
     private final CarService carService;
+    private final HistoryService historyService;
     private final WebSocketService webSocketService;
 
     @PostMapping("/register")
@@ -48,5 +52,12 @@ public class CarRestController {
     public ApiResponse<Void> resetPosition(@RequestBody @Valid CarResetPositionRequest request) {
         carService.resetPosition(request);
         return ApiResponse.success(CarSuccess.RESET_POSITION);
+    }
+
+    @GetMapping("/{carName}/history")
+    @Operation(summary = "자동차 승패 기록 조회", description = "자동차의 승패 기록을 조회합니다.")
+    public ApiResponse<HistoryResponse> getHistory(@PathVariable String carName) {
+        HistoryResponse response = historyService.getHistory(carName);
+        return ApiResponse.success(CarSuccess.GET_HISTORY, response);
     }
 }
