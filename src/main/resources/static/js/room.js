@@ -151,11 +151,6 @@ function showParticipantList(data) {
 async function startRace(event) {
     event.preventDefault();
 
-    const hostSection = document.getElementById('host-only');
-    if (hostSection) {
-        hostSection.style.display = 'none';
-    }
-
     const tryCount = document.getElementById('try-count').value.trim();
     const errorEl = document.getElementById('errorMessage');
 
@@ -185,6 +180,12 @@ async function startRace(event) {
             }
 
             errorEl.textContent = message;
+            return;
+        }
+
+        const hostSection = document.getElementById('host-only');
+        if (hostSection) {
+            hostSection.style.display = 'none';
         }
     } catch (error) {
         console.error(error);
