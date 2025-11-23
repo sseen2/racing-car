@@ -60,4 +60,8 @@ public class Car {
             position++;
         }
     }
+
+    public void resetPosition() {
+        this.position = 0;
+    }
 }

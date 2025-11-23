@@ -8,7 +8,8 @@ import racingcar.global.dto.BaseCode;
 public enum CarSuccess implements BaseCode {
 
     REGISTER_CAR(HttpStatus.OK, "자동차 등록 성공."),
-    GET_PARTICIPANTS(HttpStatus.OK, "자동차 경주 참여자 목록 조회 성공.");
+    GET_PARTICIPANTS(HttpStatus.OK, "자동차 경주 참여자 목록 조회 성공."),
+    RESET_POSITION(HttpStatus.OK, "자동차 포지션 초기화 성공.");
 
     private final HttpStatus status;
     private final String message;

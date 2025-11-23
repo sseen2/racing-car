@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import racingcar.dto.request.CarRegisterRequest;
+import racingcar.dto.request.CarResetPositionRequest;
+import racingcar.dto.request.RaceLeaveRequest;
 import racingcar.dto.response.CarInfoResponse;
 import racingcar.dto.response.success.CarSuccess;
+import racingcar.dto.response.success.RaceSuccess;
 import racingcar.global.dto.ApiResponse;
 import racingcar.service.CarService;
 import racingcar.service.WebSocketService;
@@ -38,5 +41,12 @@ public class CarRestController {
     public ApiResponse<List<CarInfoResponse>> getParticipants() {
         List<CarInfoResponse> response = carService.updateParticipants();
         return ApiResponse.success(CarSuccess.GET_PARTICIPANTS, response);
+    }
+
+    @PostMapping("/reset/position")
+    @Operation(summary = "자동차 포지션 초기화", description = "자동차의 포지션을 초기화합니다.")
+    public ApiResponse<Void> resetPosition(@RequestBody @Valid CarResetPositionRequest request) {
+        carService.resetPosition(request);
+        return ApiResponse.success(CarSuccess.RESET_POSITION);
     }
 }

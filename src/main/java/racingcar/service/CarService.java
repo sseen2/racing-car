@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import racingcar.dto.request.CarRegisterRequest;
+import racingcar.dto.request.CarResetPositionRequest;
 import racingcar.dto.request.RaceLeaveRequest;
 import racingcar.dto.request.RaceStartRequest;
 import racingcar.dto.response.error.CarError;
@@ -191,11 +192,16 @@ public class CarService {
         Car car = carRepository.findByName(carName)
                 .orElseThrow(() -> new BusinessException(CarError.CAR_NOT_FOUND));
 
-        car.updateParticipatedStatus(false);
-        handOverHost(car);
+        cleanupBeforeLeave(car);
 
         sendParticipants();
         webSocketService.sendLog(String.format(LEAVE_MESSAGE, carName));
+    }
+
+    private void cleanupBeforeLeave(Car car) {
+        car.updateParticipatedStatus(false);
+        handOverHost(car);
+        car.resetPosition();
     }
 
     private void handOverHost(Car car) {
@@ -205,5 +211,15 @@ public class CarService {
             Car newHostCar = carRepository.findTopByIsParticipatedIsTrue();
             newHostCar.updateHostStatus(true);
         }
+    }
+
+    @Transactional
+    public void resetPosition(CarResetPositionRequest request) {
+        String carName = request.carName();
+
+        Car car = carRepository.findByName(carName)
+                .orElseThrow(() -> new BusinessException(CarError.CAR_NOT_FOUND));
+
+        car.resetPosition();
     }
 }
