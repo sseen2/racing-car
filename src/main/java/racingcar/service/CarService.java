@@ -120,8 +120,7 @@ public class CarService {
     }
 
     private void validateHost(String carName) {
-        boolean isHost = carRepository.findByName(carName)
-                .orElseThrow(() -> new BusinessException(CarError.CAR_NOT_FOUND))
+        boolean isHost = findByName(carName)
                 .getIsHost();
 
         if (!isHost) {
@@ -189,8 +188,7 @@ public class CarService {
     public void leaveRace(RaceLeaveRequest request) {
         String carName = request.carName();
 
-        Car car = carRepository.findByName(carName)
-                .orElseThrow(() -> new BusinessException(CarError.CAR_NOT_FOUND));
+        Car car = findByName(carName);
 
         cleanupBeforeLeave(car);
 
@@ -215,11 +213,12 @@ public class CarService {
 
     @Transactional
     public void resetPosition(CarResetPositionRequest request) {
-        String carName = request.carName();
-
-        Car car = carRepository.findByName(carName)
-                .orElseThrow(() -> new BusinessException(CarError.CAR_NOT_FOUND));
-
+        Car car = findByName(request.carName());
         car.resetPosition();
+    }
+
+    public Car findByName(String carName) {
+        return carRepository.findByName(carName)
+                .orElseThrow(() -> new BusinessException(CarError.CAR_NOT_FOUND));
     }
 }
