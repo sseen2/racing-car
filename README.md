@@ -64,7 +64,7 @@
 
 ## Swagger 접속
 
-- localhost:8080/swagger-ui
+- /swagger-ui
 
 ![Swagger](image/swagger.png)
 
