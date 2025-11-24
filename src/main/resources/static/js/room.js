@@ -87,7 +87,10 @@ async function closeWinnerOverlay() {
         }
 
         overlay.classList.add('hidden');
-        showHostSection();
+        resetResult();
+        setTimeout(() => {
+            showHostSection();
+        }, 4000);
     } catch (error) {
         console.error(error);
     }
@@ -117,6 +120,15 @@ function showResult(data) {
         li.appendChild(positionSpan);
         trackList.appendChild(li);
     });
+}
+
+function resetResult() {
+    const trackList = document.getElementById('car-track-list');
+    if (!trackList) {
+        return;
+    }
+
+    trackList.innerHTML = '';
 }
 
 function showParticipantList(data) {
