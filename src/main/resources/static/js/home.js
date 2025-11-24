@@ -13,7 +13,7 @@ async function login(event) {
     }
 
     try {
-        const response = await fetch('/api/car/register', {
+        const response = await fetch(endpoint.car.register, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -72,7 +72,8 @@ async function getCarHistory(carName) {
     }
 
     try {
-        const response = await fetch(`/api/car/${encodeURIComponent(carName)}/history`, {
+        const param = encodeURIComponent(carName);
+        const response = await fetch(endpoint.car.history(param), {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -115,7 +116,7 @@ async function enterRoom() {
     const carInfo = JSON.parse(carInfoJson);
 
     try {
-        const response = await fetch('/api/race/enter', {
+        const response = await fetch(endpoint.race.enter, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

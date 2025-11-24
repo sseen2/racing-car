@@ -2,21 +2,21 @@ let carInfo = null;
 let stompClient = null;
 
 function connectWebSocket() {
-    const socket = new SockJS('/car-ws');
+    const socket = new SockJS(endpoint.stomp.connect);
     stompClient = Stomp.over(socket);
 
     stompClient.connect({}, function () {
-        stompClient.subscribe('/sub/race/log', function (event) {
+        stompClient.subscribe(endpoint.stomp.subRaceLog, function (event) {
             const data = event.body;
             showLogMessage(data);
         });
 
-        stompClient.subscribe('/sub/race/result', function (event) {
+        stompClient.subscribe(endpoint.stomp.subRaceResult, function (event) {
             const data = JSON.parse(event.body);
             showResult(data);
         })
 
-        stompClient.subscribe('/sub/race/participants', function (event) {
+        stompClient.subscribe(endpoint.stomp.subRaceParticipants, function (event) {
             const data = JSON.parse(event.body);
             showParticipantList(data);
         });
@@ -70,7 +70,7 @@ async function closeWinnerOverlay() {
             return;
         }
 
-        const response = await fetch('/api/car/reset/position', {
+        const response = await fetch(endpoint.car.resetPosition, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ async function startRace(event) {
     errorEl.textContent = '';
 
     try {
-        const response = await fetch('/api/race/start', {
+        const response = await fetch(endpoint.race.start, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -206,7 +206,7 @@ async function startRace(event) {
 
 async function loadInitParticipants() {
     try {
-        const response = await fetch('/api/car/participants');
+        const response = await fetch(endpoint.car.getParticipants);
         const result = await response.json();
 
         if (!result.success) {
@@ -222,7 +222,7 @@ async function loadInitParticipants() {
 
 async function exitRoom() {
     try {
-        const response = await fetch('/api/race/leave', {
+        const response = await fetch(endpoint.race.leave, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
