@@ -32,6 +32,13 @@
 
 ![enter-exception](image/enter_exception.png)
 
+### 나가기
+
+- 나가기 버튼을 누르면 즉시 연결이 종료된 후 메인 화면으로 이동합니다.
+- 방장이 나가게 된다면 방장을 위임한 후 나가게 됩니다.
+
+![leave-host](image/hand_over_host.gif)
+
 ### 경주 시작
 
 - 방장이 시도 횟수를 입력 후 게임 시작 버튼을 누르면, 게임을 시작합니다.
