@@ -22,8 +22,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(toBuilder = true)
-@Table(name = "history")
-public class History {
+@Table(name = "race_history")
+public class RaceHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

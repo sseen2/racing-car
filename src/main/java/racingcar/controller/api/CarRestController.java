@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import racingcar.dto.request.CarRegisterRequest;
 import racingcar.dto.request.CarResetPositionRequest;
 import racingcar.dto.response.CarInfoResponse;
-import racingcar.dto.response.HistoryResponse;
+import racingcar.dto.response.RaceHistoryResponse;
 import racingcar.dto.response.success.CarSuccess;
 import racingcar.global.dto.ApiResponse;
 import racingcar.service.CarService;
-import racingcar.service.HistoryService;
+import racingcar.service.RaceHistoryService;
 
 @RestController
 @RequestMapping("/api/car")
@@ -27,7 +27,7 @@ import racingcar.service.HistoryService;
 public class CarRestController {
 
     private final CarService carService;
-    private final HistoryService historyService;
+    private final RaceHistoryService raceHistoryService;
 
     @PostMapping("/register")
     @Operation(summary = "자동차 등록", description = "자동차가 없는 경우 자동차를 등록하고, 이미 등록된 경우 비밀번호를 확인 후 로그인합니다.")
@@ -52,8 +52,8 @@ public class CarRestController {
 
     @GetMapping("/{carName}/history")
     @Operation(summary = "자동차 승패 기록 조회", description = "자동차의 승패 기록을 조회합니다.")
-    public ApiResponse<HistoryResponse> getHistory(@PathVariable String carName) {
-        HistoryResponse response = historyService.getHistory(carName);
+    public ApiResponse<RaceHistoryResponse> getHistory(@PathVariable String carName) {
+        RaceHistoryResponse response = raceHistoryService.getRaceHistory(carName);
         return ApiResponse.success(CarSuccess.GET_HISTORY, response);
     }
 }

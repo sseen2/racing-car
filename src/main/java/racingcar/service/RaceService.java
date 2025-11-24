@@ -16,11 +16,11 @@ import racingcar.dto.response.CarInfoResponse;
 import racingcar.dto.response.RaceResultResponse;
 import racingcar.dto.response.error.CarError;
 import racingcar.entity.Car;
-import racingcar.entity.History;
+import racingcar.entity.RaceHistory;
 import racingcar.entity.RaceResult;
 import racingcar.global.exception.BusinessException;
 import racingcar.repository.CarRepository;
-import racingcar.repository.HistoryRepository;
+import racingcar.repository.RaceHistoryRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +41,7 @@ public class RaceService {
     private final CarService carService;
     private final WebSocketService webSocketService;
     private final CarRepository carRepository;
-    private final HistoryRepository historyRepository;
+    private final RaceHistoryRepository raceHistoryRepository;
 
     @Transactional
     public CarInfoResponse enterRace(RaceEnterRequest request) {
@@ -197,12 +197,12 @@ public class RaceService {
     }
 
     private void createHistory(Car car, RaceResult raceResult) {
-        History history = History.builder()
+        RaceHistory raceHistory = RaceHistory.builder()
                 .car(car)
                 .result(raceResult)
                 .build();
 
-        historyRepository.save(history);
+        raceHistoryRepository.save(raceHistory);
     }
 
     private void sendWinner(List<Car> winners) {

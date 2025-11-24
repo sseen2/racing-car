@@ -1,6 +1,6 @@
 package racingcar.dto.response;
 
-public record HistoryResponse(
+public record RaceHistoryResponse(
     int winCount,
     int loseCount
 ) {
